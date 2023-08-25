@@ -1,60 +1,181 @@
-'use client'
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import FormA from "./FormA";
 import FormB from "./FormB";
 import Summary from "./Summary";
 
 const App = () => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({});
-  const [age, setAge] = useState("");
+  const [formData, setFormData] = useState({
+    formType: "",
+    age: "",
+    selectedShow: "",
+  });
+
+  const handleAgeChange = (event) => {
+    setFormData({ ...formData, age: event.target.value });
+  };
+
+  const handleShowChange = (event) => {
+    setFormData({ ...formData, selectedShow: event.target.value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setStep(step + 1);
+  };
+
+  const handleGoBack = () => {
+    setStep(1);
+  };
+
+  const handleStartOver = () => {
+    setStep(1);
+    setFormData({
+      formType: "",
+      age: "",
+      selectedShow: "",
+    });
+  };
 
   return (
     <div>
-      {(step === 1 || !age) && (
+      {step === 1 && (
         <div id="start-page">
-
           <h1>Step 1: Select Form Type and Enter Age</h1>
           <label>
             Enter your age:
-            <input value={age} />
+            <input
+              type="number"
+              value={formData.age}
+              onChange={handleAgeChange}
+            />
           </label>
           <br />
           <label>
             Select Form Type:
-            <select onChange={(e) => setStep(parseInt(e.target.value))}>
-              <option value={1}>--Select--</option>
-              <option value={2}>Form A</option>
-              <option value={3}>Form B</option>
+            <select
+              onChange={(e) => setFormData({ ...formData, formType: e.target.value })}
+            >
+              <option value="">--Select--</option>
+              <option value="Form A">Form A</option>
+              <option value="Form B">Form B</option>
             </select>
           </label>
           <br />
-
-
+          <button
+            onClick={handleSubmit}
+            disabled={!formData.formType || !formData.age}
+          >
+            Next
+          </button>
         </div>
       )}
       {step === 2 && (
-        <div>
-          <FormA age={age} />
-        </div>
+        <FormA
+          age={formData.age}
+          selectedShow={formData.selectedShow}
+          onShowChange={handleShowChange}
+          onSubmit={handleSubmit}
+        />
       )}
       {step === 3 && (
-        <div>
-          <FormB age={age} />
-        </div>
+        <FormB
+          age={formData.age}
+          selectedShow={formData.selectedShow}
+          onShowChange={handleShowChange}
+          onSubmit={handleSubmit}
+        />
       )}
-      {(step === 2 || step === 3) && age ? (
-        <button id="go-back" onClick={() => setStep(1)}>Go Back</button>
+      {(step === 2 || step === 3) && formData.age ? (
+        <button id="go-back" onClick={handleGoBack}>
+          Go Back
+        </button>
       ) : null}
-
       {step === 4 && (
         <div>
-          <Summary />
-          <button id="start-over">Start Over</button>
+          <Summary formData={formData} />
+          <button id="start-over" onClick={handleStartOver}>
+            Start Over
+          </button>
         </div>
       )}
     </div>
   );
-}
+};
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 'use client'
+// import React, { useEffect, useState } from "react";
+// import FormA from "./FormA";
+// import FormB from "./FormB";
+// import Summary from "./Summary";
+
+// const App = () => {
+//   const [step, setStep] = useState(1);
+//   const [formData, setFormData] = useState({});
+//   const [age, setAge] = useState("");
+
+//   return (
+//     <div>
+//       {(step === 1 || !age) && (
+//         <div id="start-page">
+
+//           <h1>Step 1: Select Form Type and Enter Age</h1>
+//           <label>
+//             Enter your age:
+//             <input value={age} />
+//           </label>
+//           <br />
+//           <label>
+//             Select Form Type:
+//             <select onChange={(e) => setStep(parseInt(e.target.value))}>
+//               <option value={1}>--Select--</option>
+//               <option value={2}>Form A</option>
+//               <option value={3}>Form B</option>
+//             </select>
+//           </label>
+//           <br />
+
+
+//         </div>
+//       )}
+//       {step === 2 && (
+//         <div>
+//           <FormA age={age} />
+//         </div>
+//       )}
+//       {step === 3 && (
+//         <div>
+//           <FormB age={age} />
+//         </div>
+//       )}
+//       {(step === 2 || step === 3) && age ? (
+//         <button id="go-back" onClick={() => setStep(1)}>Go Back</button>
+//       ) : null}
+
+//       {step === 4 && (
+//         <div>
+//           <Summary />
+//           <button id="start-over">Start Over</button>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default App;
